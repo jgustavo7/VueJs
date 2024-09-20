@@ -1,6 +1,6 @@
 <script setup>
 import { reactive } from 'vue';
-// const nome = "joao gustavo"
+// const nome =  "joao gustavo"
 // const meuObj = {
 //     nome: "joao",
 //     filmeFavorito: "shrek",
@@ -25,6 +25,10 @@ const autorizacao = false
 const estado = reactive({
     contador: 0,
     email: '',
+    saldo: 5000,
+    transferindo: 0,
+    nomes: ['gustavo', 'joao', 'thiago', 'matheus'],
+    inserirNome: '',
 })
 
 function incrementar() {
@@ -38,6 +42,26 @@ function decrementar() {
 function alteraEmail(evento) {
    estado.email = evento.target.value;
 }
+
+function mostraSaldoFuturo() {
+    const { saldo, transferindo } = estado;
+    return saldo - transferindo;
+    
+}
+
+function validaTransferencia() {
+    const { saldo, transferindo } = estado;
+    return saldo >= transferindo
+}
+
+function cadastraNome() {
+    if (estado.inserirNome.length >= 3) {
+        estado.nomes.push(estado.inserirNome)
+    } else {
+        alert("Digite Mais Caracteres")
+    }
+}
+
 
 </script>
 
@@ -66,7 +90,39 @@ function alteraEmail(evento) {
 {{ estado.email }}
 <input type="email" @keyup="alteraEmail">
 
+<br />
+<hr />
+
+Saldo: {{ estado.saldo }} <br />
+Transferindo: {{ estado.transferindo }} <br />
+Saldo depois da Transferencia: {{ mostraSaldoFuturo() }} <br />
+<input class="campo" :class="{ invalido: !validaTransferencia() }" @keyup="evento => estado.transferindo = evento.target.value" type="number" placeholder="Quantia para Transferir" />
+<button v-if="validaTransferencia()">Transferir</button>
+<span v-else>Valor maior que o Saldo</span>
+
+<br />
+<hr />
+
+<ul>
+    <li v-for="nome in estado.nomes">
+        {{ nome }}
+    </li>
+</ul>
+<input @keyup="evento => estado.inserirNome = evento.target.value" type="text" placeholder="Digite um Nome">
+<button @click="cadastraNome" type="button">Cadastrar nome</button>
+<h3 v-for="nome in estados.nomes">{{ nome }}</h3>
 </template>
 
 <style scoped>
+
+.campo {
+    border: 2px solid #000;
+}
+
+
+.invalido {
+    outline-color: red;
+    border-color: red;
+}
+
 </style>
